@@ -10,8 +10,11 @@ function writeLog(message, type = "log", replace = false) {
     output.appendChild(line);
   }
   let marker = "*";
-  if (type === "error") marker = "-";
-  if (type === "info" || type === "success") marker = "+";
+  let cls = "";
+  if (type === "error") { marker = "-"; cls = "bad"; }
+  else if (type === "success") { marker = "+"; cls = "ok"; }
+  else if (type === "info") { marker = "+"; cls = "info"; }
+  line.className = cls;
   line.textContent = `[${marker}] ${message}`;
   output.scrollTop = output.scrollHeight;
 }

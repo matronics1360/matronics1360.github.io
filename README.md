@@ -1,26 +1,36 @@
-# PS5 Relapse Exploit
-Supported firmware: 7.00 through 13.60.
+# Matronics — PS5 Relapse Host
+
+**Developer:** Matronics  
+**Contact:** +961 70962701  
+**Site:** https://matronics1360.github.io/
+
+Made by experts from Lebanon.
+
+Supported firmware: **7.00 through 13.60**.
 
 ## Usage
-The default payloads are stored in `payloads/` after a successful run, the ELF loader listens on port `9021`.
+
+1. Open the host on your PS5 browser: `https://matronics1360.github.io/`
+2. Wait for the log to finish successfully
+3. Default payloads are in `payloads/`
+4. After a successful run, the ELF loader listens on port **9021**
 
 ## Stability notes
-Webkit may need several attempts, reload the page if the browser stalls. The kernel exploit may hang or panic the console, so reboot before trying again if that happens.
 
-## Exploit chain
-Browser stage uses JSC info leaks and a structured clone object pool mismatch to corrupt a typedarray. The kernel stage combines a address leak with an `aio_multi_wait` uaf race to establish kernel r/w.
+- WebKit may need several attempts — reload the page if the browser stalls
+- The kernel stage may hang or panic the console — reboot before trying again if that happens
 
-## Credits
-- Sonic_Iso: Kernel Exploit
-- Jordy: Webkit Exploit and Kernel Bug
-- ntfargo: Exploit Dev
-- ufm42: Exploit Dev
-- Dr. Yenyen: Testing
+## About this build
 
-Other helps:
-- TheFlow, SlidyBat, Flatz, cow, nhk, bollarz, Sleirsgoevy, EchoStretch, EarthOnion.
- 
+This Matronics host packages and presents the PS5 Relapse chain for supported firmware:
+
+- Browser stage: JSC info leaks + structured clone object pool mismatch → typedarray corruption
+- Kernel stage: address leak + `aio_multi_wait` UAF race → kernel r/w
+
 ## Disclaimer
-This project is intended for **educational and security research purposes only**. It does not endorse piracy, unauthorized access, or misuse of commercial devices. Use it only on devices you own or are authorized to test, and comply with applicable laws and regulations.
 
-The software is provided as-is, without warranty. You assume the risks of using it, including system instability, data loss, and account bans. The maintainers accept no liability for resulting damage.
+For **educational and security research** on devices you own or are authorized to test.  
+No piracy or unauthorized access. Comply with applicable laws.
+
+Provided as-is, without warranty. You assume all risk (instability, data loss, bans).  
+Matronics accepts no liability for resulting damage.
