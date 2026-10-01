@@ -11,9 +11,10 @@ Supported firmware: **7.00 through 13.60**.
 ## Usage
 
 1. Open the host on your PS5 browser: `https://matronics1360.github.io/`
-2. Wait for the log to finish successfully
-3. Default payloads are in `payloads/`
-4. After a successful run, the ELF loader listens on port **9021**
+2. **First run (online):** wait until it says cached for offline use, then the exploit runs
+3. **Later runs:** you can open the same link **offline** (AppCache, same idea as PS4 hosts)
+4. Default payloads are in `payloads/`
+5. After a successful run, the ELF loader listens on port **9021**
 
 ## Stability notes
 
