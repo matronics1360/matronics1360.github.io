@@ -2,14 +2,11 @@ import { establishPrimitive } from "./webkit.js";
 import { installWindowP } from "./utils/mem.js";
 
 const output = document.getElementById("console");
-const msgEl = document.getElementById("msg");
-const SHOW_LOG = new URLSearchParams(location.search).get("log") === "1";
-if (SHOW_LOG && document.body) document.body.className = "log";
+const promptEl = document.getElementById("prompt");
 
-function setUI(mode, text) {
-  if (SHOW_LOG || !document.body) return;
-  if (msgEl && text != null) msgEl.textContent = text;
-  document.body.className = mode || "";
+function setPrompt(mode, text) {
+  if (promptEl && text != null) promptEl.textContent = text;
+  if (document.body) document.body.className = mode || "";
 }
 
 function writeLog(message, type = "log", replace = false) {
@@ -25,7 +22,7 @@ function writeLog(message, type = "log", replace = false) {
   line.textContent = `[${marker}] ${message}`;
   output.scrollTop = output.scrollHeight;
 
-  if (!SHOW_LOG && type === "error") setUI("fail", message);
+  if (type === "error") setPrompt("fail", message);
 }
 
 function writeEvent(name, detail, type) {
@@ -38,21 +35,25 @@ function writeEvent(name, detail, type) {
 window.writeLog = writeLog;
 window.jb = { mark: writeEvent };
 window.matronicsUI = {
+  running(text) {
+    setPrompt("", text || "Jailbreaking...");
+  },
   waitR2() {
-    setUI("wait-r2", "Press R2 to load HEN");
+    setPrompt("wait-r2", "Press R2 to load HEN");
   },
   loadingHen() {
-    setUI("", "Loading HEN...");
+    setPrompt("", "Loading HEN...");
   },
-  done() {
-    setUI("done", "DONE");
+  done(text) {
+    setPrompt("done", text || "DONE");
   },
   fail(text) {
-    setUI("fail", text || "Failed");
+    setPrompt("fail", text || "Failed");
   },
 };
 
 async function getPrimitive() {
+  setPrompt("", "WebKit exploit...");
   writeLog("Starting WebKit exploit");
   const primitive = installWindowP(await establishPrimitive(writeEvent));
   if (!primitive || typeof primitive.read8 !== "function")
@@ -91,6 +92,7 @@ async function run() {
   const primitive = await getPrimitive();
   writeLog(`WebKit base: 0x${getWebKitBase().toString(16)}`, "info");
 
+  setPrompt("", "Kernel exploit...");
   await import("./relapse_exploit.js");
   await main(primitive);
 }

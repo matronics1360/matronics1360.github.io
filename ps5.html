@@ -29,9 +29,8 @@
         z-index: 0;
       }
       #brand,
+      #prompt,
       #wrap,
-      #spin,
-      #msg,
       #credit {
         position: relative;
         z-index: 1;
@@ -64,42 +63,26 @@
         vertical-align: middle;
         letter-spacing: 0.02em;
       }
-      #spin {
-        position: fixed;
-        top: calc(50% + 20px);
-        left: 50%;
-        width: 46px;
-        height: 46px;
-        margin: -23px 0 0 -23px;
-        border: 4px solid #c5d8ef;
-        border-top-color: #0b5cab;
-        border-radius: 50%;
-        animation: spin 0.9s linear infinite;
-        z-index: 2;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-      #msg {
-        position: fixed;
-        top: 50%;
-        left: 0;
-        right: 0;
-        transform: translateY(-50%);
+      #prompt {
         text-align: center;
-        font-size: 18px;
+        padding: 14px 16px 6px;
+        font-size: 20px;
         font-weight: 700;
-        letter-spacing: 0.5px;
-        display: none;
-        color: #0b3a6e;
-        z-index: 2;
-        padding: 0 16px;
+        color: #0a2f5c;
+      }
+      body.wait-r2 #prompt {
+        color: #c47d0a;
+        font-size: 24px;
+        letter-spacing: 0.04em;
+      }
+      body.done #prompt {
+        color: #0b5cab;
+      }
+      body.fail #prompt {
+        color: #c0392b;
       }
       #wrap {
-        padding: 14px 18px;
-        display: none;
+        padding: 8px 18px 40px;
       }
       #console {
         white-space: pre-wrap;
@@ -110,41 +93,15 @@
         border: 1px solid #b7cce4;
         border-radius: 5px;
         padding: 10px 12px;
-        height: calc(100vh - 120px);
+        height: calc(100vh - 160px);
         overflow-y: auto;
         color: #0b3a6e;
-      }
-      body.fail #spin,
-      body.wait-r2 #spin,
-      body.done #spin {
-        display: none;
-      }
-      body.fail #msg,
-      body.wait-r2 #msg,
-      body.done #msg {
-        display: block;
-      }
-      body.wait-r2 #msg {
-        color: #c47d0a;
-      }
-      body.done #msg {
-        color: #0b5cab;
-      }
-      body.fail #msg {
-        color: #c0392b;
-      }
-      body.log #spin,
-      body.log #msg {
-        display: none;
-      }
-      body.log #wrap {
-        display: block;
       }
       #credit {
         position: fixed;
         left: 0;
         right: 0;
-        bottom: 14px;
+        bottom: 10px;
         text-align: center;
         font-size: 12px;
         letter-spacing: 0.06em;
@@ -160,8 +117,7 @@
       <img src="logo_raw.png" alt="" width="28" height="28" /><b>Matronics</b
       ><span class="phone">+961 70962701</span>
     </div>
-    <div id="spin"></div>
-    <div id="msg">Starting...</div>
+    <div id="prompt">Starting PS5 jailbreak...</div>
     <div id="wrap">
       <div id="console"></div>
     </div>

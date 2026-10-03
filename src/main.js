@@ -283,6 +283,7 @@ async function main(userlandRW) {
   if (result.payloads) {
     log("kernel exploit complete", "info");
     log("elfldr is listening on port 9021", "info");
+    log("Press R2 to load HEN (kstuff + shadowmountplus + etaHEN)", "info");
     watchR2(async () => {
       try {
         if (window.matronicsUI && typeof window.matronicsUI.loadingHen === "function")
@@ -290,7 +291,7 @@ async function main(userlandRW) {
         const { loadOptionalPayloads } = await import("./kexp.js");
         await loadOptionalPayloads(p, chain, (message) => log(message, "info"));
         if (window.matronicsUI && typeof window.matronicsUI.done === "function")
-          window.matronicsUI.done();
+          window.matronicsUI.done("HEN LOADED");
       } catch (error) {
         const text = error instanceof Error ? error.message : String(error);
         log(text, "error");
@@ -299,9 +300,9 @@ async function main(userlandRW) {
       }
     });
   } else {
-    log("kernel chain complete: root and sandbox escape are active", "info");
+    log("kernel chain complete, but elfldr/payloads did not load -- no R2 HEN step", "info");
     if (window.matronicsUI && typeof window.matronicsUI.done === "function")
-      window.matronicsUI.done();
+      window.matronicsUI.done("JB OK - HEN loader failed (no R2)");
   }
 }
 
