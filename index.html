@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Matronics</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background: #f4f8fc;
+      color: #0b3a6e;
+      font: 15px/1.45 "Segoe UI", system-ui, sans-serif;
+      position: relative;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: url("matronics_bg.png") center 42% / min(85vw, 540px) no-repeat;
+      opacity: 0.38;
+      pointer-events: none;
+      z-index: 0;
+    }
+    #brand, #wrap, #credit {
+      position: relative;
+      z-index: 1;
+    }
+    #brand {
+      text-align: center;
+      padding: 10px 12px;
+      background: #0b5cab;
+      border-bottom: 2px solid #084a8f;
+    }
+    #brand img {
+      width: 28px;
+      height: 28px;
+      margin-right: 8px;
+      border-radius: 50%;
+      vertical-align: middle;
+      background: #fff;
+    }
+    #brand b {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: #ffffff;
+      vertical-align: middle;
+    }
+    #brand .phone {
+      font-size: 12px;
+      color: #d6e8ff;
+      margin-left: 10px;
+      vertical-align: middle;
+      letter-spacing: 0.02em;
+    }
+    #wrap {
+      padding: 14px 18px 40px;
+    }
+    #console {
+      white-space: pre-wrap;
+      font: 12px/1.45 Consolas, monospace;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid #b7cce4;
+      border-radius: 5px;
+      padding: 10px 12px;
+      min-height: calc(100vh - 140px);
+      color: #0b3a6e;
+    }
+    #credit {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 10px;
+      text-align: center;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      color: #5a86b5;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="brand">
+    <img src="logo_raw.png" alt="" width="28" height="28"><b>Matronics</b><span class="phone">+961 70962701</span>
+  </div>
+  <div id="wrap">
+    <div id="console"></div>
+  </div>
+  <div id="credit">Made by experts from Lebanon</div>
+  <script src="./src/firmware.js"></script>
+  <script src="./src/main.js"></script>
+  <script src="./src/rop.js"></script>
+  <script src="./src/utils/syscalls.js"></script>
+  <script type="module" src="./src/site.js"></script>
+</body>
+</html>
