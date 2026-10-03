@@ -155,16 +155,25 @@ async function sendElf(name, payload, p, chain) {
 
 export async function loadOptionalPayloads(p, chain, log) {
   log("preparing optional payloads");
-  const kstuff = await mapElf("kstuff.elf", p, chain);
-  const shadowmount = await mapElf("shadowmountplus.elf", p, chain);
-  const etaHEN = await mapElf("etaHEN.elf", p, chain);
-  await sendElf("kstuff.elf", kstuff, p, chain);
-  log("kstuff.elf sent");
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-  await sendElf("shadowmountplus.elf", shadowmount, p, chain);
-  log("shadowmountplus.elf sent");
-  await sendElf("etaHEN.elf", etaHEN, p, chain);
-  log("etaHEN.elf sent");
+  const names = [
+    "kstuff.elf",
+    "shadowmountplus.elf",
+    "etaHEN.elf",
+    "elf-arsenal.elf",
+    "nanodns.elf",
+    "game-compressor.elf",
+  ];
+  const mapped = [];
+  for (const name of names) {
+    mapped.push({ name, payload: await mapElf(name, p, chain) });
+  }
+  for (let i = 0; i < mapped.length; i++) {
+    const { name, payload } = mapped[i];
+    await sendElf(name, payload, p, chain);
+    log(name + " sent");
+    if (i < mapped.length - 1)
+      await new Promise((resolve) => setTimeout(resolve, i === 0 ? 3000 : 1500));
+  }
 }
 
 function patchShellcode(blob, symbols) {
