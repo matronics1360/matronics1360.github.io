@@ -2,8 +2,6 @@ import { establishPrimitive } from "./webkit.js";
 import { installWindowP } from "./utils/mem.js";
 
 const output = document.getElementById("console");
-const cacheEl = document.getElementById("cache");
-const stateEl = document.getElementById("state");
 
 function writeLog(message, type = "log", replace = false) {
   let line = replace ? output.lastElementChild : null;
@@ -12,19 +10,10 @@ function writeLog(message, type = "log", replace = false) {
     output.appendChild(line);
   }
   let marker = "*";
-  let cls = "";
-  if (type === "error") { marker = "-"; cls = "bad"; }
-  else if (type === "success") { marker = "+"; cls = "ok"; }
-  else if (type === "info") { marker = "+"; cls = "info"; }
-  line.className = cls;
+  if (type === "error") marker = "-";
+  if (type === "info" || type === "success") marker = "+";
   line.textContent = `[${marker}] ${message}`;
   output.scrollTop = output.scrollHeight;
-}
-
-function setCache(text, ok) {
-  if (!cacheEl) return;
-  cacheEl.textContent = text || "";
-  cacheEl.className = ok ? "cacheok" : "";
 }
 
 function writeEvent(name, detail, type) {
@@ -34,62 +23,6 @@ function writeEvent(name, detail, type) {
 
 window.writeLog = writeLog;
 window.jb = { mark: writeEvent };
-
-function waitForAppCache() {
-  return new Promise((resolve) => {
-    const ac = window.applicationCache;
-    if (!ac || !document.documentElement.hasAttribute("manifest")) {
-      setCache("cache unavailable");
-      resolve("none");
-      return;
-    }
-
-    if (!navigator.onLine) {
-      setCache("offline -- from cache", true);
-      resolve("offline");
-      return;
-    }
-
-    if (ac.status === ac.IDLE) {
-      setCache("cached -- offline ready", true);
-      resolve("idle");
-      return;
-    }
-
-    if (ac.status === ac.UPDATEREADY) {
-      try { ac.swapCache(); } catch (e) {}
-      setCache("update downloaded -- reload once", true);
-      resolve("updateready");
-      return;
-    }
-
-    setCache("checking cache...");
-    let done = false;
-    const finish = (msg, ok, reason) => {
-      if (done) return;
-      done = true;
-      setCache(msg, ok);
-      resolve(reason);
-    };
-
-    ac.addEventListener("downloading", () => setCache("caching for offline (first run)..."), false);
-    ac.addEventListener("progress", (e) => {
-      if (e && e.total)
-        setCache("caching " + Math.round((e.loaded / e.total) * 100) + "%");
-    }, false);
-    ac.addEventListener("cached", () => finish("cached for offline use", true, "cached"), false);
-    ac.addEventListener("noupdate", () => finish("cached -- offline ready", true, "noupdate"), false);
-    ac.addEventListener("updateready", () => {
-      try { ac.swapCache(); } catch (e) {}
-      finish("update downloaded -- reload once", true, "updateready");
-    }, false);
-    ac.addEventListener("error", () => finish("cache unavailable -- running online", false, "error"), false);
-    ac.addEventListener("obsolete", () => finish("cache obsolete -- running online", false, "obsolete"), false);
-
-    // Safety timeout so exploit still runs if cache events never fire.
-    setTimeout(() => finish(cacheEl.textContent || "cache timeout -- continuing", false, "timeout"), 45000);
-  });
-}
 
 async function getPrimitive() {
   writeLog("Starting WebKit exploit");
@@ -119,12 +52,7 @@ async function run() {
   const rejection = window.firmware.rejection();
   if (rejection)
     throw new Error(rejection);
-
-  if (stateEl) stateEl.textContent = "preparing cache...";
-  await waitForAppCache();
-  if (stateEl) stateEl.textContent = "PS5 Relapse";
-
-  writeLog("Matronics PS5 Relapse host", "info");
+  writeLog("Credits: ntfargo, ufm42, Sonic_Iso, Jordy, Dr. Yenyen, TheFlow, SlidyBat, Flatz, cow, nhk, bollarz, Sleirsgoevy, EchoStretch, EarthOnion", "info");
   writeLog(`Agent: ${navigator.userAgent}`, "info");
   writeLog(`Firmware: ${window.fw_str}`, "info");
   const primitive = await getPrimitive();
