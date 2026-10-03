@@ -297,4 +297,5 @@ async function main(userlandRW) {
 const fwScript = document.createElement("script");
 document.body.appendChild(fwScript);
 
-fwScript.setAttribute("src", `offsets/${window.fw_str}.js?v=` + Date.now());
+// Fixed query so AppCache can serve offsets offline (Date.now() would miss the cache).
+fwScript.setAttribute("src", `offsets/${window.fw_str}.js?v=1`);

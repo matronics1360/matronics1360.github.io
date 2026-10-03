@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" manifest="cache.appcache">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Matronics</title>
   <style>
     html, body {
@@ -23,7 +23,7 @@
       pointer-events: none;
       z-index: 0;
     }
-    #brand, #wrap, #credit {
+    #brand, #wrap, #credit, #status {
       position: relative;
       z-index: 1;
     }
@@ -55,8 +55,18 @@
       vertical-align: middle;
       letter-spacing: 0.02em;
     }
+    #status {
+      padding: 10px 18px 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: #0a2f5c;
+      min-height: 22px;
+    }
+    #status.warn { color: #c47d0a; }
+    #status.ok { color: #1a7a4c; }
+    #status.bad { color: #c0392b; }
     #wrap {
-      padding: 14px 18px 40px;
+      padding: 10px 18px 40px;
     }
     #console {
       white-space: pre-wrap;
@@ -65,7 +75,7 @@
       border: 1px solid #b7cce4;
       border-radius: 5px;
       padding: 10px 12px;
-      min-height: calc(100vh - 140px);
+      min-height: calc(100vh - 160px);
       color: #0b3a6e;
     }
     #credit {
@@ -86,14 +96,124 @@
   <div id="brand">
     <img src="logo_raw.png" alt="" width="28" height="28"><b>Matronics</b><span class="phone">+961 70962701</span>
   </div>
+  <div id="status">checking offline cache...</div>
   <div id="wrap">
     <div id="console"></div>
   </div>
   <div id="credit">Made by experts from Lebanon</div>
-  <script src="./src/firmware.js"></script>
-  <script src="./src/main.js"></script>
-  <script src="./src/rop.js"></script>
-  <script src="./src/utils/syscalls.js"></script>
-  <script type="module" src="./src/site.js"></script>
+  <script>
+  (function () {
+    var statusEl = document.getElementById("status");
+    var started = false;
+
+    function setStatus(text, cls) {
+      statusEl.textContent = text;
+      statusEl.className = cls || "";
+    }
+
+    function loadExploit() {
+      if (started) return;
+      started = true;
+      setStatus("starting jailbreak...", "warn");
+
+      function add(src, module) {
+        var s = document.createElement("script");
+        if (module) s.type = "module";
+        s.src = src;
+        document.body.appendChild(s);
+      }
+
+      add("./src/firmware.js", false);
+      add("./src/main.js", false);
+      add("./src/rop.js", false);
+      add("./src/utils/syscalls.js", false);
+      add("./src/site.js", true);
+    }
+
+    function waitForTap(msg, action) {
+      setStatus(msg, "warn");
+      function fire() {
+        window.removeEventListener("click", fire);
+        window.removeEventListener("keydown", fire);
+        action();
+      }
+      window.addEventListener("click", fire);
+      window.addEventListener("keydown", fire);
+    }
+
+    var ac = window.applicationCache;
+    if (!ac || !document.documentElement.hasAttribute("manifest")) {
+      setStatus("cache unavailable -- running online", "bad");
+      loadExploit();
+      return;
+    }
+
+    if (!navigator.onLine) {
+      setStatus("offline -- using cache", "ok");
+      loadExploit();
+      return;
+    }
+
+    if (ac.status === ac.IDLE) {
+      setStatus("cached -- offline ready", "ok");
+      loadExploit();
+      return;
+    }
+
+    if (ac.status === ac.UPDATEREADY) {
+      try { ac.swapCache(); } catch (e) {}
+      waitForTap("UPDATE READY -- press X or tap to reload & run", function () {
+        location.reload();
+      });
+      return;
+    }
+
+    setStatus("caching for offline (keep internet on)...", "warn");
+
+    ac.addEventListener("downloading", function () {
+      setStatus("caching for offline (first run)...", "warn");
+    }, false);
+
+    ac.addEventListener("progress", function (e) {
+      if (e && e.total)
+        setStatus("caching " + Math.round((e.loaded / e.total) * 100) + "% -- keep internet on", "warn");
+    }, false);
+
+    ac.addEventListener("cached", function () {
+      setStatus("cached for offline use", "ok");
+      waitForTap("CACHED -- press X or tap to run", loadExploit);
+    }, false);
+
+    ac.addEventListener("updateready", function () {
+      try { ac.swapCache(); } catch (e) {}
+      waitForTap("UPDATE READY -- press X or tap to reload & run", function () {
+        location.reload();
+      });
+    }, false);
+
+    ac.addEventListener("noupdate", function () {
+      setStatus("cached -- offline ready", "ok");
+      loadExploit();
+    }, false);
+
+    ac.addEventListener("error", function () {
+      setStatus("cache failed -- running online anyway", "bad");
+      waitForTap("CACHE FAILED -- press X or tap to run", loadExploit);
+    }, false);
+
+    ac.addEventListener("obsolete", function () {
+      setStatus("cache obsolete", "bad");
+      waitForTap("CACHE OBSOLETE -- press X or tap to run", loadExploit);
+    }, false);
+
+    // Safety: if status is already IDLE and no event fired, do not hang.
+    setTimeout(function () {
+      if (!started && ac.status === ac.IDLE) {
+        setStatus("cached -- offline ready", "ok");
+        loadExploit();
+      }
+    }, 8000);
+  })();
+  </script>
 </body>
 </html>
