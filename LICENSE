@@ -1,6 +1,11 @@
 MIT License
 
-Copyright (c) 2026 Nathan Fargo
+Copyright (c) 2026 raw13g
+
+This license applies to the code in this repository authored by raw13g. Bundled
+third-party components retain their own licenses and are not relicensed here:
+the payload binary (payload2.bin), the kernel patch blobs in patches/, and the
+primitive files core.js, mem.js and int64.js.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

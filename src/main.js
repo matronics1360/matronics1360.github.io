@@ -88,7 +88,9 @@ function watchR2(onPress) {
     onPress();
   }
 
-  log("press R2 to load kstuff, shadowmountplus and etaHEN", "info");
+  log("Press R2 to load HEN (kstuff + shadowmountplus + etaHEN)", "info");
+  if (window.matronicsUI && typeof window.matronicsUI.waitR2 === "function")
+    window.matronicsUI.waitR2();
   window.addEventListener("keydown", onKey, true);
 }
 
@@ -283,14 +285,23 @@ async function main(userlandRW) {
     log("elfldr is listening on port 9021", "info");
     watchR2(async () => {
       try {
+        if (window.matronicsUI && typeof window.matronicsUI.loadingHen === "function")
+          window.matronicsUI.loadingHen();
         const { loadOptionalPayloads } = await import("./kexp.js");
         await loadOptionalPayloads(p, chain, (message) => log(message, "info"));
+        if (window.matronicsUI && typeof window.matronicsUI.done === "function")
+          window.matronicsUI.done();
       } catch (error) {
-        log(error instanceof Error ? error.message : String(error), "error");
+        const text = error instanceof Error ? error.message : String(error);
+        log(text, "error");
+        if (window.matronicsUI && typeof window.matronicsUI.fail === "function")
+          window.matronicsUI.fail(text);
       }
     });
   } else {
     log("kernel chain complete: root and sandbox escape are active", "info");
+    if (window.matronicsUI && typeof window.matronicsUI.done === "function")
+      window.matronicsUI.done();
   }
 }
 
