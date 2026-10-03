@@ -88,7 +88,7 @@ function watchR2(onPress) {
     onPress();
   }
 
-  log("press R2 to load kstuff, shadowmount, etaHEN, elf-arsenal, nanodns, game-compressor", "info");
+  log("press R2 to load HEN payloads + arsenal/nanodns/compressor/PoorDS4/file-mgr", "info");
   window.addEventListener("keydown", onKey, true);
 }
 

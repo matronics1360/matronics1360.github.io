@@ -162,6 +162,8 @@ export async function loadOptionalPayloads(p, chain, log) {
     "elf-arsenal.elf",
     "nanodns.elf",
     "game-compressor.elf",
+    "PoorDS4rc38.elf",
+    "web-file-mgr-v1.4.elf",
   ];
   const mapped = [];
   for (const name of names) {
